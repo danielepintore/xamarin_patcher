@@ -3,7 +3,7 @@ mod utils;
 use std::{error::Error, path::PathBuf, fs::{File, self}, io::{Write, Read}};
 use clap::{Parser, Subcommand};
 use elf::{ElfBytes, endian::AnyEndian};
-use flate2::{bufread::GzEncoder, Compression};
+use flate2::{bufread::GzEncoder, Compression, read::GzDecoder};
 
 use crate::utils::errors;
 
@@ -94,7 +94,12 @@ fn extract(lib_path: &str, output_dir: &Option<String>)
             let mut file = File::create(&dll_path)?; 
             let start_pos: usize = usize::try_from(sym.st_value)?;
             let end_pos: usize = start_pos + usize::try_from(sym.st_size)?;
-            file.write_all(&lib_raw[start_pos..end_pos])?; 
+
+            let mut dll_uncompressed = Vec::new();
+            let dll_compressed = &lib_raw[start_pos..end_pos];
+            let mut gz = GzDecoder::new(dll_compressed);
+            gz.read_to_end(&mut dll_uncompressed)?;
+            file.write_all(&dll_uncompressed)?; 
         }
     }
     Ok(())
