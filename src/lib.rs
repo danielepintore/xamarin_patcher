@@ -110,6 +110,7 @@ fn rebundle(
     dll_path: &str, 
     dll_name: &Option<String>) 
 -> Result<(), Box<dyn Error>> {
+    println!("[Warning]: function not tested, you may get undefined behavior");
     println!("Loading the lib...");
     let lib_path = utils::check_path(lib_path)?;
     let mut lib_raw: Vec<u8> = Vec::new();
