@@ -1,5 +1,5 @@
 [package]
-name = "xamarin_bundle_tools"
+name = "xamarin_patcher"
 version = "0.0.1"
 edition = "2021"
 
